@@ -30,8 +30,8 @@ public class ArrayList<E> implements List<E> {
     private static final int DEFAULT_SIZE = 10;
 
     public ArrayList(int initialSize){
-        if(this.currentSize<1){
-            throw new IllegalArgumentException("Size cannot be smaler tha 1");
+        if(initialSize<1){
+            throw new IllegalArgumentException("Size cannot be smaller tha 1");
         }
         this.currentSize = 0;
         this.elements = (E[]) new Object[initialSize];
@@ -76,41 +76,107 @@ public class ArrayList<E> implements List<E> {
 
     @Override
     public void add(E e) {
+        //add at the end
+        if(this.size()==this.elements.length){
+            this.reAllocate();
+        }
+        this.elements[this.size()] = e;
 
+    }
+    private void  reAllocate(){
+        E[] newElements = (E[]) new Object[this.size()*2];
+        for (int i = 0; i < this.size(); i++) {
+            newElements[i] = this.elements[i];
+        }
+        this.elements = newElements;
     }
 
     @Override
     public void add(E e, int index) {
+        if((index<0)||(index>this.size())){
+            throw new IndexOutOfBoundsException("Illegal Position");
+        }
+        //special case index == this.size()
+        if(index == this.size()){
+            this.add(e);
+        }
+        else{
+            if(this.size() == this.elements.length){
+                this.reAllocate();
+            }
+            for (int i = this.size(); i > index; i--) {
+                this.elements[i] = this.elements[i-1];
+            }
+            this.elements[index] = e;
+            this.currentSize++;
+        }
 
     }
 
     @Override
     public E get(int index) {
-        return null;
+        return this.elements[index];
     }
 
     @Override
     public E remove(int index) {
-        return null;
+        if((index<0)||(index>this.size())){
+            throw new IndexOutOfBoundsException("Illegal Position");
+        }
+        E result = this.elements[index];
+        for (int i = index; i < this.size() ; i++) {
+            this.elements[i] = this.elements[i+1];
+        }
+
+        this.elements[this.currentSize--] = null;
+        return result;
     }
 
     @Override
     public boolean remove(E e) {
-        return false;
+        int targetIndex = this.firstIndex(e);
+        if(targetIndex<0){
+            return false;
+        }
+        else{
+            this.remove(targetIndex);
+            return true;
+        }
+
+//        for (int i = 0; i < this.size(); i++) {
+//            if(this.elements[i].equals(e)){
+//                this.remove(i);
+//                return true;
+//            }
+//        }
+//        return false;
     }
 
     @Override
     public int removeAll(E e) {
-        return 0;
+        int result = 0;
+        while(this.isMember(e)){
+            this.remove(e);
+            result++;
+        }
+        return result;
     }
 
     @Override
-    public E replace(E e) {
-        return null;
+    public E replace(int index, E e) {
+        if((index<0)||(index>this.size())){
+            throw new IndexOutOfBoundsException("Illegal Position");
+        }
+        E result = this.elements[index];
+        this.elements[index] = e;
+        return result;
     }
 
     @Override
     public void clear() {
+        while(!this.isEmpty()){
+            this.remove(0);
+        }
 
     }
 

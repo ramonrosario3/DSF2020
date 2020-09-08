@@ -14,7 +14,7 @@ public interface List<E> extends Iterable<E>{
     public E remove (int index);
     public boolean remove(E e);
     public int removeAll(E e);
-    public E replace(E e);
+    public E replace(int inddex, E e);
     public void clear();
     public Object[] toArray();
     public void print(PrintStream out);
