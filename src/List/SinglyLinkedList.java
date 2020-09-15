@@ -96,41 +96,120 @@ public class SinglyLinkedList<E> implements List<E> {
 
     @Override
     public void add(E e) {
+        if(this.isEmpty()){
+            Node<E> newNode = new Node<E>();
+            newNode.setElement(e);
+            this.header.setNext(newNode);
+            this.currentSize++;
+        }
+        else{
+            //Cool
+            //for (Node<E> temp = this.header.getNext(); temp.getNext()!=null; temp = temp.getNext();
+            Node<E> temp = header.getNext();
+            while(temp.getNext() != null){
+                temp = temp.getNext();
+            }
+            Node<E> newNode = new Node<E>();
+            newNode.setElement(e);
+            temp.setNext(newNode);
+            this.currentSize++;//
+        }
 
     }
 
     @Override
     public void add(E e, int index) {
+        if((index<0)||(index>=this.size())){
+            throw new IndexOutOfBoundsException("Index out of range");
+        }
+        else if(index == this.size()){
+            this.add(e);
+        }
+        else{
+            //what if index is 0
+            Node<E> temp = null;
+            if(index == 0){
+                temp = this.header;
+            }
+            else{
+                temp = this.getPosition(index -1);
+            }
+            Node<E> newNode = new Node<E>();
+            newNode.setElement(e);
+            newNode.setNext(temp.getNext());
+            temp.setNext(newNode);
+            this.currentSize++;
+        }
+
+
+    }
+    private Node<E> getPosition(int index){
+        //assume the index is valid
+        int currentPosition = 0;
+        Node<E> temp = this.header.getNext();
+        while (currentPosition < index ){
+            temp =temp.getNext();
+            currentPosition++;
+        }
+        //temp points to node a t position index
+        return temp;//return reference the Node
 
     }
 
     @Override
     public E get(int index) {
-        return null;
+        if((index<0)||(index>=this.size())){
+            throw new IndexOutOfBoundsException("Index out of range");
+        }
+        Node<E> target = this.getPosition(index);
+        return target.getElement();
     }
 
     @Override
     public E remove(int index) {
-        return null;
+        if((index<0)||(index>=this.size())){
+            throw new IndexOutOfBoundsException("Index out of range");
+        }
+        Node<E> target = this.getPosition(index-1);
+        E result  = target.getNext().getElement();
+        target.setNext(target.getNext().getNext());
+        return result;
     }
 
     @Override
     public boolean remove(E e) {
+        if(this.isMember(e)){
+            this.remove(this.firstIndex(e));
+            return true;
+        }
         return false;
     }
 
     @Override
     public int removeAll(E e) {
-        return 0;
+        int count = 0;
+        while (this.remove(e)){
+            count++;
+        }
+        return count;
     }
 
     @Override
-    public E replace(int inddex, E e) {
-        return null;
+    public E replace(int index, E e) {
+        if((index<0)||(index>=this.size())){
+            throw new IndexOutOfBoundsException("Index out of range");
+        }
+        Node<E> target = this.getPosition(index);
+        E result = target.getElement();
+        target.setElement(e);
+        return result;
     }
 
     @Override
     public void clear() {
+        while(!this.isEmpty()){
+            this.remove(0);
+        }
 
     }
 
