@@ -3,8 +3,34 @@ package List;
 import java.awt.event.ItemEvent;
 import java.io.PrintStream;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class SinglyLinkedList<E> implements List<E> {
+    private class SinglyLinkedListIterator<E> implements Iterator<E>{
+        private Node<E> nextNode;
+
+        public SinglyLinkedListIterator(){
+            this.nextNode = (Node<E>) header.getNext();
+        }
+
+        @Override
+        public boolean hasNext() {
+            return this.nextNode!=null;
+        }
+
+        @Override
+        public E next() {
+            if(this.hasNext()){
+                E result = this.nextNode.getElement();
+                this.nextNode = this.nextNode.getNext();
+                return result;
+
+            }
+            else{
+                throw new NoSuchElementException();
+            }
+        }
+    }
     private static class Node<E>{
         private E element;//Value stored in the node
         private Node<E> next;//Reference to the next node
@@ -167,22 +193,69 @@ public class SinglyLinkedList<E> implements List<E> {
 
     @Override
     public E remove(int index) {
-        if((index<0)||(index>=this.size())){
-            throw new IndexOutOfBoundsException("Index out of range");
+        if(index<0 ||index>=this.size()){
+            throw new IndexOutOfBoundsException("Index is out of bounds");
         }
-        Node<E> target = this.getPosition(index-1);
-        E result  = target.getNext().getElement();
-        target.setNext(target.getNext().getNext());
-        return result;
+        else {
+            Node<E> temp = null, target =null;
+            E result = null;
+
+            if(index == 0){
+                temp = this.header;
+                target = temp.getNext();
+            }
+            else{
+                temp = this.getPosition(index-1);
+            }
+            target = temp.getNext();
+            temp.setNext(target.getNext());
+            result = target.getElement();
+            target.setNext(null);
+            target.setElement(null);
+            this.currentSize--;
+            return result;
+        }
     }
 
     @Override
     public boolean remove(E e) {
-        if(this.isMember(e)){
-            this.remove(this.firstIndex(e));
-            return true;
+
+        int targetPos = this.firstIndex(e);
+        if(targetPos<0||this.isEmpty()){
+            return false;
         }
-        return false;
+        else{
+            Node<E> temp = null;//node just before target
+            Node<E> target = null;//node to be deleted
+            if(targetPos == 0){
+                temp = this.header;
+                target = temp.getNext();
+                //move pointers
+                temp.setNext(target.getNext());
+                target.setNext(null);
+                target.setElement(null);
+                this.currentSize--;
+                return true;
+            }
+            else{
+                temp = this.getPosition( targetPos -1);
+                target = temp.getNext();
+
+                temp.setNext(target.getNext());
+                target.setNext(null);
+                target.setElement(null);
+                this.currentSize--;
+                return true;
+
+            }
+
+        }
+//      /*Other Method*/
+//        if(this.isMember(e)){
+//            this.remove(this.firstIndex(e));
+//            return true;
+//        }
+//        return false;
     }
 
     @Override
@@ -215,16 +288,25 @@ public class SinglyLinkedList<E> implements List<E> {
 
     @Override
     public Object[] toArray() {
-        return new Object[0];
+        Object[] result = new Object[this.size()];
+        int i = 0;
+        for (Object e: this){
+            result[i++] = e;
+        }
+        return result;
     }
 
     @Override
     public void print(PrintStream out) {
+        for(Object e: this){
+            out.print(e + " ");
+        }
+        out.println();
 
     }
 
     @Override
     public Iterator<E> iterator() {
-        return null;
+        return new SinglyLinkedListIterator<E>();
     }
 }
