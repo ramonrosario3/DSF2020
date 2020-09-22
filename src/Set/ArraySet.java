@@ -103,6 +103,7 @@ public class ArraySet<E> implements Set<E> {
 
     @Override
     public boolean isSubset(Set<E> S2) {
+        //checks to see if this is a subset of S2
         return this.difference(S2).isEmpty();
     }
 
