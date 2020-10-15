@@ -1,5 +1,7 @@
 package Stack;
 
+import List.ArrayList;
+
 import java.io.PrintStream;
 
 public class ArrayStack<E> implements Stack<E> {
@@ -14,6 +16,10 @@ public class ArrayStack<E> implements Stack<E> {
         }
         this.elements =  (E[]) new Object[initialsize];
         this.top = 0;
+    }
+
+    public ArrayStack(){
+        this(DEFAULT_SIZE);
     }
     @Override
     public boolean isEmpty() {
