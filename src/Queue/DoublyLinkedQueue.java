@@ -93,13 +93,17 @@ public class DoublyLinkedQueue<E> implements Queue<E> {
     public E dequeue() {
         Node<E> out = this.tail.getPrevious();
         E result = out.getElement();
-        out.getPrevious().setNext(this.tail);
-        tail.setPrevious(out.getPrevious());
-        out.setElement(null);
-        out.setPrevious(null);
-        out.setNext(null);
-        this.currentSize++;
-        return result;
+
+        if(this.isEmpty()) return  null;
+        else {
+            out.getPrevious().setNext(this.tail);
+            tail.setPrevious(out.getPrevious());
+            out.setElement(null);
+            out.setPrevious(null);
+            out.setNext(null);
+            this.currentSize++;
+            return result;
+        }
     }
 
     @Override
