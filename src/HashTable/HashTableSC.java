@@ -91,31 +91,55 @@ public class HashTableSC<K,V> implements Map<K,V> {
     @Override
     public V remove(K key) {
         int bucketNumber =  this.hashFunction(key);
+        V result = null;
         List<MapEntry<K,V>> bucket = (List<MapEntry<K,V>>) this.buckets[bucketNumber];
-        for (MapEntry<K,V> e: bucket) {
-            if(e.getKey().equals(key))  return e.getValue();
+        for (int i = 0; i < bucket.size(); i++) {
+            if(bucket.get(i).getKey()==key){
+                result  = bucket.remove(i).getValue();
+                this.currentSize--;
+                return result;
+            }
         }
-
         return null;
     }
 
     @Override
     public boolean contains(K key) {
-        return false;
+        return this.get(key)!=null;
     }
 
     @Override
     public void clear() {
-
+        List<MapEntry<K,V>> bucket = null;
+        for (Object b: this.buckets) {
+            bucket = (List<MapEntry<K,V>>) b;
+            bucket.clear();
+        }
     }
 
     @Override
     public List getKeys() {
-        return null;
+        List<K> result = new SinglyLinkedList<K>();
+        List<MapEntry<K, V>> bucket = null;
+        for (Object b : this.buckets) {
+            bucket = (List<MapEntry<K, V>>) b;
+            for (MapEntry<K, V> e : bucket) {
+                result.add(e.getKey());
+            }
+        }
+        return result;
     }
 
     @Override
     public List getValues() {
-        return null;
+        List<V> result = new SinglyLinkedList<V>();
+        List<MapEntry<K, V>> bucket = null;
+        for (Object b : this.buckets) {
+            bucket = (List<MapEntry<K, V>>) b;
+            for (MapEntry<K, V> e : bucket) {
+                result.add(e.getValue());
+            }
+        }
+        return result;
     }
 }
