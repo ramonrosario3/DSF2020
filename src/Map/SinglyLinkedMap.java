@@ -130,4 +130,8 @@ public class SinglyLinkedMap<K,V> implements Map<K,V> {
         }
         return result;
     }
+
+    public static void main(String[] args) {
+        Map<Integer, String> T = new SinglyLinkedMap<Integer, String>();
+    }
 }

@@ -11,7 +11,7 @@ public interface Map<K,V> {
     public V remove(K key);
     public boolean contains(K key);
     public void clear();
-    public List getKeys();
-    public List getValues();
+    public List<K> getKeys();
+    public List<V> getValues();
 
 }
